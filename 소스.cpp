@@ -35,7 +35,6 @@ int solution(vector<vector<int>> rectangle, int characterX, int characterY, int 
         }
     }
 
-    int TotalLength = 0;
     for (int i = 0; i < rectangle.size(); i++)
     {
         for (int j = rectangle[i][0]; j <= rectangle[i][2]; j++)
@@ -46,12 +45,7 @@ int solution(vector<vector<int>> rectangle, int characterX, int characterY, int 
                 {
                     if (Map[j][k] == 0)
                     {
-                        TotalLength++;
                         Map[j][k] = 1;
-                    }
-                    else if (Map[j][k] == 1)
-                    {
-                        Map[j][k] = 2;
                     }
                 }
                 else
@@ -62,79 +56,22 @@ int solution(vector<vector<int>> rectangle, int characterX, int characterY, int 
         }
     }
 
-    Map[itemX][itemY] = 3;
+    int TotalLength = 0;
+    for (int i = 0; i < MaxX + 1; i++)
+    {
+        for (int j = 0; j < MaxY + 1; j++)
+        {
+            if (Map[i][j] == 1)
+            {
+                TotalLength++;
+            }
+        }
+    }
 
-    int player[2] = { characterX ,characterY };
-    int vector[2] = { 0,0 };
     int count = 0;
-
-    if (Map[player[0] + 1][player[1]] == 1)
-    {
-        vector[0] = 1;
-    }
-    else if (Map[player[0] - 1][player[1]] == 1)
-    {
-        vector[0] = -1;
-    }
-    else if (Map[player[0]][player[1]+1] == 1)
-    {
-        vector[1] = 1;
-    }
-    else if (Map[player[0]][player[1]-1] == 1)
-    {
-        vector[1] = -1;
-    }
-
+    int player[2] = { characterX,characterY };
     while (1)
     {
-        int Next[2] = { player[0] + vector[0],player[1] + vector[1] };
-        if (Map[Next[0]][Next[1]] == 3)
-        {
-            count++;
-            break;
-        }
-        if (Map[Next[0]][Next[1]] == 1)
-        {
-            player[0] = Next[0];
-            player[1] = Next[1];
-            count++;
-        }
-        if (Map[Next[0]][Next[1]] == 2)
-        {
-            if (Map[player[0] + vector[1]][player[1] + vector[0]] == 0)
-            {
-                int tmp = vector[0];
-                vector[0] = vector[1];
-                vector[1] = tmp;
-            }
-            else if (Map[player[0] + vector[1]][player[1] + vector[0]] == 9)
-            {
-                int tmp = -vector[0];
-                vector[0] = -vector[1];
-                vector[1] = tmp;
-            }
-            player[0] = Next[0];
-            player[1] = Next[1];
-            count++;
-        }
-        else
-        {
-            int P = Map[player[0] + vector[1]][player[1] + vector[0]];
-            if (P == 1 || P == 2 || P == 3)
-            {
-                int tmp = vector[0];
-                vector[0] = vector[1];
-                vector[1] = tmp;
-            }
-            else
-            {
-                int tmp = -vector[0];
-                vector[0] = -vector[1];
-                vector[1] = tmp;
-            }
-        }
-
-        Map[player[0]][player[1]] = 7;
         for (int i = 0; i < MaxX + 1; i++)
         {
             for (int j = 0; j < MaxY + 1; j++)
@@ -143,21 +80,30 @@ int solution(vector<vector<int>> rectangle, int characterX, int characterY, int 
             }
             cout << endl;
         }
-        cout << vector[0] << " " << vector[1] << endl;
+        cout << player[0] << " " << player[1] << endl;
+        if (player[0] == itemX && player[1] == itemY)
+        {
+            break;
+        }
+        if (Map[player[0] + 1][player[1]] == 1)
+        {
+            player[0]++;
+        }
+        else if (Map[player[0] - 1][player[1]] == 1)
+        {
+            player[0]--;
+        }
+        else if (Map[player[0]][player[1]+1] == 1)
+        {
+            player[1]++;
+        }
+        else if (Map[player[0]][player[1] - 1] == 1)
+        {
+            player[1]--;
+        }
+        count++;
         int j;
         cin >> j;
-    }
-
-    int count2 = TotalLength - count;
-    int answer = 0;
-
-    if (count >= count2)
-    {
-        answer = count;
-    }
-    else if (count < count2)
-    {
-        answer = count2;
     }
 
     for (int i = 0; i < MaxX + 1; i++)
@@ -166,6 +112,17 @@ int solution(vector<vector<int>> rectangle, int characterX, int characterY, int 
     }
     delete[] Map;
 
+    int count2 = TotalLength - count;
+    int answer = 0;
+
+    if (count >= count2)
+    {
+        answer = count2;
+    }
+    else if (count < count2)
+    {
+        answer = count;
+    }
     return answer;
 }
 
